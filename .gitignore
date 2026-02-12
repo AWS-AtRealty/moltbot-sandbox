@@ -31,6 +31,9 @@ Thumbs.db
 .env.*
 !.env.example
 
+# OpenClaw config (contains tokens — kept in repo root for reference only)
+openclaw.json
+
 # TypeScript
 *.tsbuildinfo
 

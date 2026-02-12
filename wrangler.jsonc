@@ -70,6 +70,11 @@
   "browser": {
     "binding": "BROWSER",
   },
+  // Plaintext variables (pinned here so they survive deploys)
+  "vars": {
+    "CF_ACCESS_TEAM_DOMAIN": "tech-team-529.cloudflareaccess.com",
+    "CF_ACCESS_AUD": "a2bbe84e9b98600be49117ba066d7a818f0f98a96d3e7afca4438df9ee3357e8",
+  },
   // Note: CF_ACCOUNT_ID should be set via `wrangler secret put CF_ACCOUNT_ID`
   // Secrets to configure via `wrangler secret put`:
   //
