@@ -118,6 +118,21 @@ if [ -d "$BACKUP_DIR/skills" ] && [ "$(ls -A $BACKUP_DIR/skills 2>/dev/null)" ];
     fi
 fi
 
+# Restore gogcli (GOG skill) config and keyring from R2 backup if available
+GOG_CONFIG_DIR="/root/.config/gogcli"
+if [ -d "$BACKUP_DIR/gogcli" ] && [ "$(ls -A $BACKUP_DIR/gogcli 2>/dev/null)" ]; then
+    if should_restore_from_r2; then
+        echo "Restoring gogcli config from $BACKUP_DIR/gogcli..."
+        mkdir -p "$GOG_CONFIG_DIR"
+        cp -a "$BACKUP_DIR/gogcli/." "$GOG_CONFIG_DIR/"
+        echo "Restored gogcli config from R2 backup"
+    fi
+fi
+
+# Configure gogcli to use file-based keyring (persists across container restarts via R2)
+# GOG_KEYRING_PASSWORD is passed from the worker env vars for non-interactive decryption
+export GOG_KEYRING_BACKEND=file
+
 # ============================================================
 # ONBOARD (only if no config exists yet)
 # ============================================================

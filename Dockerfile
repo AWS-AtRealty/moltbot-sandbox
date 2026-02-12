@@ -25,6 +25,20 @@ RUN npm install -g pnpm
 RUN npm install -g openclaw@2026.2.3 \
     && openclaw --version
 
+# Install gogcli (Google Workspace CLI for GOG skill)
+# Pre-built binary from GitHub releases — no Homebrew needed
+ENV GOG_VERSION=0.9.0
+RUN ARCH="$(dpkg --print-architecture)" \
+    && case "${ARCH}" in \
+         amd64) GOG_ARCH="amd64" ;; \
+         arm64) GOG_ARCH="arm64" ;; \
+         *) echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
+       esac \
+    && curl -fsSLk https://github.com/steipete/gogcli/releases/download/v${GOG_VERSION}/gogcli_${GOG_VERSION}_linux_${GOG_ARCH}.tar.gz -o /tmp/gog.tar.gz \
+    && tar -xzf /tmp/gog.tar.gz -C /usr/local/bin gog \
+    && rm /tmp/gog.tar.gz \
+    && gog --version
+
 # Create OpenClaw directories
 # Legacy .clawdbot paths are kept for R2 backup migration
 RUN mkdir -p /root/.openclaw \
@@ -32,7 +46,7 @@ RUN mkdir -p /root/.openclaw \
     && mkdir -p /root/clawd/skills
 
 # Copy startup script
-# Build cache bust: 2026-02-06-v29-sync-workspace
+# Build cache bust: 2026-02-12-v30-add-gogcli
 COPY start-openclaw.sh /usr/local/bin/start-openclaw.sh
 RUN chmod +x /usr/local/bin/start-openclaw.sh
 
