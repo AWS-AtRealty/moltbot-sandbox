@@ -8,9 +8,14 @@
 
 set -e
 
+# Kill any stale gateway process from a previous run.
+# The container is ephemeral but the process can survive a Worker-side restart
+# because `exec` replaces the shell and the Sandbox API .kill() may miss it.
 if pgrep -f "openclaw gateway" > /dev/null 2>&1; then
-    echo "OpenClaw gateway is already running, exiting."
-    exit 0
+    echo "Stale OpenClaw gateway detected, killing it..."
+    pkill -9 -f "openclaw gateway" 2>/dev/null || true
+    sleep 2
+    echo "Stale gateway killed."
 fi
 
 CONFIG_DIR="/root/.openclaw"

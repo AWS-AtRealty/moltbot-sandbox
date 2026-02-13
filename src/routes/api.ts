@@ -288,6 +288,19 @@ adminApi.post('/gateway/restart', async (c) => {
       await new Promise((r) => setTimeout(r, 2000));
     }
 
+    // Force-kill any lingering gateway processes inside the container.
+    // The startup script uses `exec` which replaces the shell process, so
+    // the Sandbox API .kill() may not reach the actual node process.
+    try {
+      const killProc = await sandbox.startProcess(
+        'sh -c "pkill -9 -f \'openclaw gateway\' 2>/dev/null; sleep 1; true"',
+      );
+      await killProc.waitForExit({ timeout: 5000 });
+      console.log('Force-killed any lingering gateway processes');
+    } catch (pkillErr) {
+      console.log('pkill cleanup (non-fatal):', pkillErr);
+    }
+
     // Start a new gateway in the background
     const bootPromise = ensureMoltbotGateway(sandbox, c.env).catch((err) => {
       console.error('Gateway restart failed:', err);
