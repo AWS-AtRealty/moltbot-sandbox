@@ -33,6 +33,7 @@ Thumbs.db
 
 # OpenClaw config (contains tokens — kept in repo root for reference only)
 openclaw.json
+openclaw-secrets.json
 
 # TypeScript
 *.tsbuildinfo
@@ -61,3 +62,6 @@ test/e2e/.dev.vars
 
 # Temporary e2e wrangler configs
 .wrangler-e2e-*.jsonc
+
+# R2 folder backup
+r2/
